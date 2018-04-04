@@ -1,58 +1,44 @@
-#include"LivesInterface.h"
-#include"Human.h"
-#include"Dog.h"
-#include"Retriever.h"
-#include"Maltese.h"
-#include"Rose.h"
-#include<cstdio>
-#include<cstring>
-
+//#include<iostream>
+#include "main.h"
 int main() {
+	/////장치 초기화 하기/////////
+	initGraphic();
+	initKey();
+	initTimer();
+	initPool();		//게임 오브젝트 관리 풀을 초기화함
 
-	LivesInterface* lives[7];
+	system("mode 100, 80");							//콘솔창 크기 조정
 
-	Human* james = new Human(LivesInterface::Origin::EUROPE, Human::Race::WHITE, "James", "England");
-	Human* ashely = new Human(LivesInterface::Origin::AMERICA, Human::Race::BLACK, "Ashely", "USA");
-	Human* cheolsoo = new Human(LivesInterface::Origin::ASIA, Human::Race::ASIAN, "Cheolsoo", "Korea");
+	addGameObj(new Player());
+	addGameObj(new Enemy());
 
-	james->setPosition(100.0f, 200.0f);
-	ashely->setPosition(200.0f, -20.f);
-	cheolsoo->setPosition(400.0f, 50.0f);
+	//getSize();	//풀에 들어있는 오브젝트 갯수
+	///////업데이트 반복/////////	
+	while (true) {
+		clear(0, 0, 255);
+		updateKey();
+		updateTimer();
 
-	LivesInterface::Position dogPosition;
-	dogPosition.x = 912.0f;
-	dogPosition.y = 606.0f;
-
-	Dog* maltese = new Maltese("Digger");
-	maltese->setOwnerName(cheolsoo->getName());
-	maltese->setPosition(dogPosition);
-
-	Dog* retriever = new Retriever("멍멍이");
-	retriever->setOwnerName(cheolsoo->getName());
-	retriever->setPosition(dogPosition);
-
-	Rose* redRose = new Rose(20, ROSE_COLOR_RED);
-	Rose* yellowRose = new Rose(14, ROSE_COLOR_YELLOW);
-
-	redRose->getPosition().x = 200.0f;
-	redRose->getPosition().y = 212.0f;
-	yellowRose->getPosition().x = -1.0f;
-	yellowRose->getPosition().y = -2.0f;
-
-
-	lives[0] = james;
-	lives[1] = ashely;
-	lives[2] = cheolsoo;
-	lives[3] = maltese;
-	lives[4] = retriever;
-	lives[5] = redRose;
-	lives[6] = yellowRose;
-
-	for (int i = 0; i < 7; i++) {
-
-		lives[i]->printToConsole();
+		///////////////////
+		//게임객체 업데이트	
+		for (int i = 0; i < getSize(); i++)
+		{
+			GameObject* o = getGameObj(i); // 객체를 받아옴 0번부터 getSize까지
+			if (o != NULL)
+			{
+				o->update(); // 받아온 객체를 업데이트
+				if (o->getName() == "Player") 
+				{
+					if (o->getKeyCode() == VK_SPACE) 
+					{
+						addGameObj(new PLaser(o->getPx(), o->getPy()));
+					}
+				}	
+				o->render();
+			}
+		}
+		render();
+		deleteArray();
 	}
-
-	fgetc(stdin);
 	return 0;
 }

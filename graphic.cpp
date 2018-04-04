@@ -1,14 +1,65 @@
-#include"graphic.h"
-#include<math.h> //sqrt ¼öÇĞ ÇÔ¼ö Çì´õ ÆÄÀÏ
+ï»¿#include "graphic.h"
 
-void drawLine(int x0, int y0, int x1, int y1, unsigned int col) {
+
+//í™”ë©´ ì¶œë ¥ì´ì „ì— ê·¸ë¦¼ì„ ê·¸ë¦¬ëŠ” ë°±ë²„í¼ ë°°ì—´ì„
+unsigned int BackBuffer[HEIGHT][WIDTH];
+
+unsigned int rgb(int r, int g, int b)
+{
+	unsigned int rgb = ((unsigned int)r) << 16 | ((unsigned int)g) << 8 | ((unsigned int)b) << 0;
+	return rgb;
+}
+
+void setPixel(int x, int y, unsigned int col)
+{
+	//ë²”ìœ„ ê²€ì‚¬ ì¶”ê°€
+	if (0 <= y && y <HEIGHT)  //y ì¢Œí‘œê°’ì„ ê²€ì‚¬
+	{
+		if (0 <= x && x < WIDTH)
+		{
+			BackBuffer[y][x] = col;
+		}
+	}
+}
+
+unsigned int getPixel(int x, int y)
+{
+	//ë²”ìœ„ ê²€ì‚¬ ì¶”ê°€
+	if (0 <= y && y <HEIGHT)  //y ì¢Œí‘œê°’ì„ ê²€ì‚¬
+	{
+		if (0 <= x && x < WIDTH)
+		{
+			return BackBuffer[y][x];
+		}
+	}
+
+	return 0;
+}
+
+void setPixel(int x, int y, int r, int g, int b)
+{
+	//ë²”ìœ„ ê²€ì‚¬ ì¶”ê°€
+	if (0 <= y && y <HEIGHT)  //y ì¢Œí‘œê°’ì„ ê²€ì‚¬
+	{
+		if (0 <= x && x < WIDTH)
+		{
+			BackBuffer[y][x] = rgb(r, g, b);
+		}
+	}
+}
+
+
+void drawLine(int x0, int y0, int x1, int y1, unsigned int col)
+{
 	int temp1;
 	int temp2;
 
-	//¼öÆò¼± ±×¸®±â ÀÎÁö¸¦ ÆÇ´ÜÇÏ¿©, ¼öÆò¼± ±×¸®±âÀÌ¸é....
-	if (y0 == y1) {
-		//½ÃÀÛÁ¡(x0,y0)ÀÌ ³¡Á¡(x1, y1)º¸´Ù ¿À¸¥ÂÊÀÌ¸é ³¡Á¡°ú ½ÃÀÛÁ¡À» ¹Ù²Û´Ù.
-		if (x0 > x1) {
+	//(A)ìˆ˜í‰ì„  ê·¸ë¦¬ê¸° ì¸ì§€ë¥¼ íŒë‹¨í•˜ì—¬, ìˆ˜í‰ì„  ê·¸ë¦¬ê¸°ì´ë©´ .... 
+	if (y0 == y1)
+	{
+		//(A.a) ì‹œì‘ì (x0, y0) ì´ ëì (x1, y1) ë³´ë‹¤ ì˜¤ë¥¸ìª½ì´ë©´ ëì ê³¼ ì‹œì‘ì ì„ ë°”ê¾¼ë‹¤. 
+		if (x0 > x1)
+		{
 			temp1 = x0;
 			x0 = x1;
 			x1 = temp1;
@@ -17,16 +68,20 @@ void drawLine(int x0, int y0, int x1, int y1, unsigned int col) {
 			y0 = y1;
 			y1 = temp2;
 		}
-	
-		//¼öÆò¼± ±×¸®±âÇÑ´Ù
-		for (int x = x0; x <= x1; x++) {
-			Direct2D::setPixel(x, y0, col);
+
+		//(A.b) ìˆ˜í‰ì„  ê·¸ë¦¬ê¸°í•œë‹¤. (ìœ„ ê·¸ë¦¼ì˜(1) ìˆ˜í‰ê·¸ë¦¬ê¸° ì°¸ê³ ) 
+		for (int x = x0; x <= x1; x++)
+		{
+			setPixel(x, y0, col);
 		}
 	}
-	//¼öÁ÷¼± ±×¸®±âÀÎÁö¸¦ ÆÇ´ÜÇÑ´Ù, ¼öÁ÷¼± ±×¸®±â ÀÌ¸é...
-	else if (x0 == x1) {
-		//½ÃÀÛÁ¡(x0,y0)ÀÌ ³¡Á¡(x1,y1)º¸´Ù ¾Æ·¡ÂÊÀÌ¸é ³¡Á¡°ú ½ÃÀÛÁ¡À» ¹Ù²Û´Ù.
-		if (y0 > y1) {
+
+	//(B) ìˆ˜ì§ì„  ê·¸ë¦¬ê¸°ì¸ì§€ë¥¼ íŒë‹¨í•œë‹¤, ìˆ˜ì§ì„  ê·¸ë¦¬ê¸° ì´ë©´.... 
+	else if (x0 == x1)
+	{
+		//(B.a) ì‹œì‘ì (x0, y0) ì´ ëì (x1, y1) ë³´ë‹¤ ì•„ë˜ìª½ ì´ë©´ ëì ê³¼ ì‹œì‘ì ì„ ë°”ê¾¼ë‹¤. 
+		if (y0 > y1)
+		{
 			temp1 = x0;
 			x0 = x1;
 			x1 = temp1;
@@ -35,18 +90,26 @@ void drawLine(int x0, int y0, int x1, int y1, unsigned int col) {
 			y0 = y1;
 			y1 = temp2;
 		}
-		//¼öÁ÷¼± ±×¸®±âÇÑ´Ù.
-		for (int y = y0; y <= y1; y++) {
-			Direct2D::setPixel(x0, y, col);
+
+		//(B.b) ìˆ˜ì§ì„  ê·¸ë¦¬ê¸°í•œë‹¤. (ìœ„ ê·¸ë¦¼ì˜(3) ìˆ˜ì§ ê·¸ë¦¬ê¸° ì°¸ê³ ) 
+		for (int y = y0; y <= y1; y++)
+		{
+			setPixel(x0, y, col); //col ê°’ì€ ê°ìê°€ ì„ íƒí•¨
+
 		}
+
 	}
-	else {
+	//ï»¿(C) ìˆ˜ì§ / ìˆ˜í‰ì„  ê·¸ë¦¬ê¸°ê°€ ì•„ë‹ˆë©´..ì…ë ¥ ì (ì‹œì‘ì  ëì )ìœ¼ë¡œ ê¸°ìš¸ê¸°ë¥¼ êµ¬í•œë‹¤. (ê¸°ìš¸ê¸° ë³€ìˆ˜ ëŠ” ì‹¤ìˆ˜í˜•ìœ¼ë¡œ í•¨) 
+	else
+	{
 		float m = (float)(y1 - y0) / (float)(x1 - x0);
 
-		//±â¿ï±â°¡ -1¿¡¼­ + 1»çÀÌ¿¡ ÀÖ´ÂÁö ÆÇ´ÜÇÏ¿© ±â¿ï±â°¡ -1¿¡¼­ +1 »çÀÌÀÌ¸é..
-		if (-1 <= m && m <= 1) {
-			//½ÃÀÛÁ¡(x0,y0)ÀÌ ³¡Á¡(x1,y1)º¸´Ù ¿À¸¥ÂÊÀÌ¸é.. ³¡Á¡°ú ½ÃÀÛÁ¡À» ¹Ù²Û´Ù.
-			if (x0 > x1) {
+		//(D) ê¸°ìš¸ê¸°ê°€ - 1 ì—ì„œ + 1 ì‚¬ì´ì— ìˆëŠ”ì§€ íŒë‹¨í•˜ì—¬...ê¸°ìš¸ê¸°ê°€ - 1 ì—ì„œ + 1 ì‚¬ì´ì´ë©´... 
+		if (-1 <= m && m <= 1)
+		{
+			//(D.a) ì‹œì‘ì (x0, y0)ì´ ëì (x1, y1) ë³´ë‹¤ ì˜¤ë¥¸ìª½ì´ë©´..ëì ê³¼ ì‹œì‘ì ì„ ë°”ê¾¼ë‹¤. 
+			if (x0 > x1)
+			{
 				temp1 = x0;
 				x0 = x1;
 				x1 = temp1;
@@ -55,60 +118,280 @@ void drawLine(int x0, int y0, int x1, int y1, unsigned int col) {
 				y0 = y1;
 				y1 = temp2;
 			}
-			for (int x = x0; x <= x1; x++) {
-				Direct2D::setPixel(x, (int)(y0 + (x - x0)*m + 0.5), col);
+
+			//(D.b) ê¸°ìš¸ê¸°ê°€ - 1 ~+ 1 ì¸ ì§ì„ ì„ ê·¸ë¦°ë‹¤. (ìœ„ ê·¸ë¦¼(5) ë²ˆ ê·¸ë¦¬ê¸° ì°¸ê³ ) 
+			for (int x = x0; x <= x1; x++)
+			{
+				setPixel(x, (int)(y0 + (x - x0)*m + 0.5), col);
+
 			}
+
 		}
-		//³ª¸ÓÁö °æ¿ìÀÌ¸é..±â¿ï±â°¡ -1ÀÌÇÏ, +1ÀÌ»óÀÎ Á÷¼±ÀÌ¸é
+		//(E) ë‚˜ë¨¸ì§€ ê²½ìš°ì´ë©´..(ê¸°ìš¸ê¸°ê°€ - 1 ì´í•˜, +1 ì´ìƒì¸ ì§ì„ ì´ë©´ 
 		else {
-			//½ÃÀÛÁ¡(x0,y0)ÀÌ ³¡Á¡(x1,y1)º¸´Ù ¾Æ·¡ÂÊÀÌ¸é.. ³¡Á¡°ú ½ÃÀÛÁ¡À» ¹Ù²Û´Ù.
-			if (y0 > y1) {
+
+			//(E.a) ì‹œì‘ì (x0, y0)ì´ ëì (x1, y1) ë³´ë‹¤ ì•„ë˜ìª½ì´ë©´..ëì ê³¼ ì‹œì‘ì ì„ ë°”ê¾¼ë‹¤.
+
+			if (y0 > y1)
+			{
 				temp1 = x0;
 				x0 = x1;
 				x1 = temp1;
-				
+
 				temp2 = y0;
 				y0 = y1;
 				y1 = temp2;
 			}
-			//±â¿ï±â°¡ -1ÀÌÇÏ, +1ÀÌ»óÀÎ Á÷¼±À» ±×¸°´Ù.
-			for (int y = y0; y <= y1; y++) {
-				Direct2D::setPixel((int)(x0+(y - y0) * 1 / m + 0.5), y, col);
+
+			//(E.b) ê¸°ìš¸ê¸°ê°€ - 1 ì´í•˜, +1 ì´ìƒì¸ ì§ì„ ì„ ê·¸ë¦°ë‹¤. (ìœ„ ê·¸ë¦¼(7) ë²ˆ ê·¸ë¦¬ê¸° ì°¸ê³ ) 
+			for (int y = y0; y <= y1; y++)
+			{
+				setPixel((int)(x0 + (y - y0) * 1 / m + 0.5), y, col); //col ê°’ì€ ê°ìê°€ ì„ íƒí•¨ 
 			}
+
 		}
 	}
 }
 
-void drawCircle(int cx, int cy, int r, unsigned int col) {
+void drawLine(int x0, int y0, int x1, int y1, int r, int g, int b)
+{
+	drawLine(x0, y0, x1, y1, rgb(r, g, b));
+}
+
+void drawCircle(int cx, int cy, int r, unsigned int col)
+{
 	int x = 0, y = 0;
 
-	for (x = 0; x <= y; x++) {
-		y = (int)(sqrt(r*r - x * x) + 0.5);	//yÃà ÁÂÇ¥¸¦ °è»êÇÑ´Ù.
+	for (x = 0; x <= y; x++)
+	{
+		y = (int)(sqrt(r*r - x * x) + 0.5); // y ì¶• ì¢Œí‘œë¥¼ ê³„ì‚°í•œë‹¤.
+
+		setPixel(cx + x, cy + y, col); //(1)ê³„ì‚°ëœ (x,y) ì¢Œí‘œì— í”½ì…€ì„ ì¶œë ¥í•œë‹¤.
+		setPixel(cx + x, cy - y, col); //(2)í”½ì…€ì˜ ì¶œë ¥ì€ ì›ì (cx, cy) ë§Œí¼ 
+		setPixel(cx - x, cy + y, col); // í‰í–‰ ì´ë™ ì‹œí‚¨ë‹¤.
+		setPixel(cx - x, cy - y, col);
+		setPixel(cx + y, cy + x, col);
+		setPixel(cx + y, cy - x, col);
+		setPixel(cx - y, cy + x, col);
+		setPixel(cx - y, cy - x, col);
+	}
+}
+
+void drawCircle(int cx, int cy, int radius, int r, int g, int b)
+{
+	drawCircle(cx, cy, radius, rgb(r, g, b));
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//ì•„ë˜ì˜ í•¨ìˆ˜ëŠ” ë‹¨ìˆœ ì‹¤ìŠµìš©ì…ë‹ˆë‹¤. ê²Œì„ ì œì‘ì— ì‚¬ìš©ë˜ì§€ ì•Šìœ¼ë¯€ë¡œ..ê¸°ëŠ¥ì„ ì´ìš©ë§Œí•¨
+///////////////////////////////////////////////////////////////////////////////
+
+HWND hWnd = NULL;
+
+void initGraphic()
+{
+	HWND GetConsoleHwnd();
+
+	//ì»¤ì„œ ìˆ¨ê¸°ê¸°
+	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_CURSOR_INFO info;
+	info.dwSize = 100;
+	info.bVisible = FALSE;
+	SetConsoleCursorInfo(consoleHandle, &info);
+
+	//ê·¸ë˜í”½ ëª¨ë“¤ í•¸ë“¤ëŸ¬ë¥¼ êµ¬í•´ì˜´
+	hWnd = GetConsoleHwnd();
+}
+
+void clear(unsigned int col)
+{
+	for (int j = 0; j < HEIGHT; j++)
+	{
+		for (int i = 0; i < WIDTH; i++)
+		{
+			BackBuffer[j][i] = col; //ë°°ì—´ì„ ì§€ìš´ë‹¤
+		}
+	}
+}
+
+void clear(int r, int g, int b)
+{
+	clear(rgb(r, g, b));
+}
+
+void render()
+{
+	HDC hDC, hMemDC;
+	HBITMAP hBmp;
+	void   * pBmp = NULL;
+	int size;
+
+	hDC = GetDC(hWnd);
+	hMemDC = CreateCompatibleDC(hDC);
+	size = WIDTH * HEIGHT * 4;
+
+	BITMAPINFO bi;
+	ZeroMemory(&bi, sizeof(BITMAPINFO));
+
+	bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	bi.bmiHeader.biWidth = WIDTH;
+	bi.bmiHeader.biHeight = -HEIGHT;
+	bi.bmiHeader.biPlanes = 1;
+	bi.bmiHeader.biBitCount = 32;
+	bi.bmiHeader.biCompression = BI_RGB;
+	bi.bmiHeader.biSizeImage = 0;
+	bi.bmiHeader.biXPelsPerMeter = 0;
+	bi.bmiHeader.biYPelsPerMeter = 0;
+	bi.bmiHeader.biClrUsed = 0;
+	bi.bmiHeader.biClrImportant = 0;
+
+	hBmp = CreateDIBSection(hDC, &bi, DIB_RGB_COLORS, &pBmp, NULL, 0);
+	SelectObject(hMemDC, hBmp);
+
+	CopyMemory(pBmp, BackBuffer, size);
+
+	BitBlt(hDC, STARTX, STARTY, WIDTH, HEIGHT, hMemDC, 0, 0, SRCCOPY);
+
+	DeleteObject(hBmp);
+	DeleteDC(hMemDC);
+	DeleteObject(hDC);
+}
+inline void getARGB(unsigned int color, unsigned char* a, unsigned char* r, unsigned char* g, unsigned char* b) {
+	*a = (color >> 24) & 0xff;
+	*r = (color >> 16) & 0xff;
+	*g = (color >> 8) & 0xff;
+	*b = (color >> 0) & 0xff;
+}
+inline unsigned int makeARGB(unsigned char a, unsigned char r, unsigned char g, unsigned char b) {
+	return (a << 24) || (r << 16) || (g << 8) || (b << 0);
+}
+inline unsigned int pixelBlierp(unsigned int c00, unsigned int c10, unsigned int c01, unsigned int c11, float dx, float dy) {
+	unsigned char A[4];
+	unsigned char B[4];
+	unsigned char C[4];
+	unsigned char D[4];
+
+	getARGB(c00, &A[0], &A[1], &A[2], &A[3]);
+	getARGB(c10, &B[0], &B[1], &B[2], &B[3]);
+	getARGB(c01, &C[0], &C[1], &C[2], &C[3]);
+	getARGB(c11, &D[0], &D[1], &D[2], &D[3]);
+	float x1;
+	float x2;
+	float x[4];
+
+	for (int i = 0; i < 4; i++) {
+		x1 = A[i] * (1 - dx) + B[i] * dx;
+		x2 = C[i] * (1 - dx) + D[i] * dx;
+
+		x[i] = x1 * (1 - dy) + x2 * dy;
+	}
+	return makeARGB((unsigned char)x[0], (unsigned char)x[1], (unsigned char)x[2], (unsigned char)x[3]);
+}
+unsigned int getImagePixel(DDS_FILE* image, float x, float y) {
+	float x0 = 0.0f;
+	float y0 = 0.0f;
+
+	float x1 = image->header.dwWidth - 2.0f;
+	float y1 = image->header.dwHeight - 2.0f;
+
+	if ((x1 >= x && x >= x0) && (y1 >= y && y >= y0)) {
+		int xp = (int)floor(x);
+		int yp = (int)floor(y);
+
+		float dx = x - xp;
+		float dy = y - yp;
+		
+		unsigned int A = image->data[(yp + 0)*image->header.dwWidth + (xp + 0)];
+		unsigned int B = image->data[(yp + 0)*image->header.dwWidth + (xp + 1)];
+		unsigned int C = image->data[(yp + 1)*image->header.dwWidth + (xp + 0)];
+		unsigned int D = image->data[(yp + 1)*image->header.dwWidth + (xp + 1)];
+
+
+		return pixelBlierp(A, B, C, D, dx, dy);
 	
-		Direct2D::setPixel(cx + x, cy + y, col); //°è»êµÈ ÁÂÇ¥¿¡ ÇÈ¼¿À» Ãâ·ÂÇÑ´Ù.
-		Direct2D::setPixel(cx + x, cy - y, col); //ÇÈ¼¿ Ãâ·ÂÀº ¿øÁ¡(cx,cy)¸¸Å­
-		Direct2D::setPixel(cx - x, cy + y, col); //ÆòÇà ÀÌµ¿ ½ÃÅ²´Ù.
-		Direct2D::setPixel(cx - x, cy - y, col);
-		Direct2D::setPixel(cx + y, cy + x, col);	
-		Direct2D::setPixel(cx + y, cy - x, col);
-		Direct2D::setPixel(cx - y, cy + x, col);
-		Direct2D::setPixel(cx - y, cy - x, col);
 	}
+	return 0x00000000;
+}
+unsigned int alphaBlending(unsigned int c0, unsigned int c1) {
+	unsigned char C[4];
+	unsigned char B[4];
+
+	getARGB(c0, &C[0], &C[1], &C[2], &C[3]);
+	getARGB(c1, &B[0], &B[1], &B[2], &B[3]);
+
+	unsigned char A = C[0];
+	unsigned char r = (unsigned char)((A*C[1] + (255 - A)*B[1])/ 255.0f);
+	unsigned char g = (unsigned char)((A*C[2] + (255 - A)*B[2])/ 255.0f);
+	unsigned char b = (unsigned char)((A*C[3] + (255 - A)*B[3])/ 255.0f);
+
+	return makeARGB(B[0], r, g, b);
 }
 
-//»ç°¢Çü ±×¸®±â ÇÔ¼ö
-void drawRect(int x0, int y0, int x1, int y1, unsigned int col) {
-	drawLine(x0, y0, x1, y0, col);
-	drawLine(x0, y1, x1, y1, col);
+#ifdef GRAPHIC_MODE_0
 
-	drawLine(x0, y0, x0, y1, col);
-	drawLine(x1, y0, x1, y1, col);
+HWND GetConsoleHwnd()
+{
+#define MY_BUFSIZE 1024 // Buffer size for console window titles.
+	HWND hwndFound;         // This is what is returned to the caller.
+	WCHAR pszNewWindowTitle[MY_BUFSIZE]; // Contains fabricated
+										 // WindowTitle.
+	WCHAR pszOldWindowTitle[MY_BUFSIZE];  // Contains original
+										  // WindowTitle.
+
+										  // Fetch current window title.
+
+	GetConsoleTitle(pszOldWindowTitle, MY_BUFSIZE);
+	// Format a "unique" NewWindowTitle.
+
+	wsprintf(pszNewWindowTitle, "%d/%d", GetTickCount(), GetCurrentProcessId());
+	// Change current window title.
+
+	SetConsoleTitle(pszNewWindowTitle);
+
+	// Ensure window title has been updated.
+	Sleep(40);
+
+	// Look for NewWindowTitle.
+	hwndFound = FindWindow(NULL, pszNewWindowTitle);
+
+	// Restore original window title.
+	SetConsoleTitle(pszOldWindowTitle);
+
+	return(hwndFound);
 }
 
-//´Ù°¢Çü ±×¸®±â
-void drawPolygon(int* x, int* y, int n, unsigned int col) {
-	for (int i = 0; i < n - 1; i++) {
-		drawLine(x[i], y[i], x[i + 1], y[i + 1], col);
-	}
-	drawLine(x[n - 1], y[n - 1], x[0], y[0], col);
+#else
+
+HWND GetConsoleHwnd()
+{
+#define MY_BUFSIZE 1024 // Buffer size for console window titles.
+	HWND hwndFound;         // This is what is returned to the caller.
+	CHAR pszNewWindowTitle[MY_BUFSIZE]; // Contains fabricated
+										// WindowTitle.
+	CHAR pszOldWindowTitle[MY_BUFSIZE];  // Contains original
+										 // WindowTitle.
+
+										 // Fetch current window title.
+
+	GetConsoleTitle(pszOldWindowTitle, MY_BUFSIZE);
+	// Format a "unique" NewWindowTitle.
+
+	wsprintf(pszNewWindowTitle, "%d/%d", GetTickCount(), GetCurrentProcessId());
+	// Change current window title.
+
+	SetConsoleTitle(pszNewWindowTitle);
+
+	// Ensure window title has been updated.
+	Sleep(40);
+
+	// Look for NewWindowTitle.
+	hwndFound = FindWindow(NULL, pszNewWindowTitle);
+
+	// Restore original window title.
+	SetConsoleTitle(pszOldWindowTitle);
+
+	return(hwndFound);
 }
+
+
+#endif
